@@ -4,6 +4,7 @@ let numberProducts = document.getElementById("numberProducts");
 let tablaListaCompras = document.getElementById("tablaListaCompras");
 let countProduct =0;
 let totalPriceProducts = 0;
+let datos =[]
 let totalProducts = document.getElementById("totalProducts");
 let totalCostProducts = document.getElementById("totalCostProducts");
 let cuerpoTabla =document.getElementsByTagName("tbody");
@@ -15,7 +16,7 @@ let cuerpoTabla =document.getElementsByTagName("tbody");
 //     <td>$ 23.00</td>
 //     </tr> `;
 
-console.log(nameProduct,numberProducts);
+// console.log(nameProduct,numberProducts);
 
 function validarNombre() {
     if (nameProduct.value.length <3) {
@@ -69,6 +70,16 @@ agregar.addEventListener("click",e=>
     totalPriceProducts += (costProduct*cantidadProduct)
     totalCostProducts.innerHTML=`${totalPriceProducts}`
     console.log(totalCostProducts);
+    let element = `{
+        "id":${countProduct},
+        "nombre":"${nameProduct.value}",
+        "cantidad":${numberProducts.value},
+        "precio":${costProduct}
+    }`;
+
+    datos.push(JSON.parse(element));
+    console.log(datos);
+    localStorage.setItem("DatosProductos",JSON.stringify(datos))
     let rowOfProducts =  
     `<tr>
     <th scope="row">${countProduct}</th>
@@ -93,4 +104,22 @@ nameProduct.addEventListener('blur',(e)=>{
 })
 numberProducts.addEventListener('blur',(e)=>{
     e.target.value = e.target.value.trim();
+})
+
+window.addEventListener("load",function(){
+    if (localStorage.getItem("DatosProductos")!=null) {
+        datos=JSON.parse(localStorage.getItem("DatosProductos"))
+        datos.forEach(element => {
+            cuerpoTabla[0].innerHTML += `<tr>
+            <th scope="row">${element.id}</th>
+            <td>${element.nombre}</td>
+            <td>${element.cantidad}</td>
+            <td>${element.precio}</td>
+            </tr> `;
+            
+        });
+        
+    }
+
+
 })
